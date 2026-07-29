@@ -520,11 +520,11 @@ export default function FeeExposed() {
         }];
       }
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
+          model: "claude-3-5-sonnet-20241022",
           max_tokens: 1000,
           system: SYSTEM_PROMPT,
           messages,
@@ -532,6 +532,8 @@ export default function FeeExposed() {
       });
 
       const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
       const text = data.content?.map((b) => b.text || "").join("") || "";
       const parsed = parseFeeResponse(text);
 
@@ -760,3 +762,4 @@ export default function FeeExposed() {
     </div>
   );
 }
+

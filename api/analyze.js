@@ -11,17 +11,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'GEMINI_API_KEY is not configured.' });
     }
 
-    const prompt = `Analyze the following terms of service or agreement text for hidden fees, fine print, sneaky subscriptions, autorenewals, data selling, and user-unfriendly conditions.
+    const prompt = `Analyze the following terms of service or agreement text for hidden fees, fine print, sneaky subscription charges, or extra costs.
 Return your response ONLY as valid JSON in this exact structure without markdown backticks:
 {
-  "riskLevel": "Low" | "Medium" | "High",
+  "riskLevel": "Low",
   "summary": "Brief overall assessment",
   "findings": [
     {
-      "category": "Fee" | "Privacy" | "Contract" | "Subscription",
+      "category": "Fee",
       "title": "Short title",
       "description": "Clear explanation",
-      "severity": "Low" | "Medium" | "High"
+      "severity": "Low"
     }
   ],
   "actionItems": ["Practical recommendation 1", "Practical recommendation 2"]
@@ -31,7 +31,8 @@ Text to analyze:
 ${text}`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
+}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -42,7 +43,7 @@ ${text}`;
     );
 
     const data = await response.json();
-    
+
     if (data.error) {
       return res.status(500).json({ error: data.error.message });
     }
